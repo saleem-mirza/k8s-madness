@@ -6,6 +6,7 @@ Investigate a possible permission escape in Namespace `restricted`. The context 
 
 Try to find the password-key values of the Secrets secret1, secret2 and secret3 in Namespace `restricted` and print decoded values.
 
+
 ## Assumption
 
 To proceed, you must have the following:
@@ -48,17 +49,7 @@ kubectl apply -f ./deploy.yaml
 ```bash
 aws iam create-user --user-name restricted
 USER_ARN=$(aws iam get-user --user-name restricted | jq .User.Arn)
-echo "User Arn: {USER_ARN}"
-```
-
-## Create AccessKey and Secret Keys
-
-Create keys for user restricted to access resources programatically. Save keys into environment variables
-
-```bash
-RESULT=$(aws iam create-access-key --user-name restricted)
-export AWS_SECRET_ACCESS_KEY=$(jq -r .AccessKey.SecretAccessKey <<< $RESULT)
-export AWS_ACCESS_KEY_ID=$(jq -r .AccessKey.AccessKeyId <<< $RESULT)
+echo "User Arn: ${USER_ARN}"
 ```
 
 ## Update `aws-auth` ConfigMap
@@ -79,6 +70,15 @@ data:
   mapUsers: |
     - userarn: arn:aws:iam::<AWS Account ID>:user/restricted
       username: restricted
+```
+## Create AccessKey and Secret Keys
+
+Create keys for user restricted to access resources programatically. Save keys into environment variables
+
+```bash
+RESULT=$(aws iam create-access-key --user-name restricted)
+export AWS_SECRET_ACCESS_KEY=$(jq -r .AccessKey.SecretAccessKey <<< $RESULT)
+export AWS_ACCESS_KEY_ID=$(jq -r .AccessKey.AccessKeyId <<< $RESULT)
 ```
 
 ## Get IAM user details based on exported secret and access keys
