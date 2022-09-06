@@ -1,5 +1,11 @@
 # RBAC misconfiguration and exploits
 
+## Scenario
+
+Investigate a possible permission escape in Namespace `restricted`. The context authenticates as user restricted which has only limited permissions and shouldn't be able to read Secret values.
+
+Try to find the password-key values of the Secrets secret1, secret2 and secret3 in Namespace `restricted` and print decoded values.
+
 ## Assumption
 
 To proceed, you must have the following:
